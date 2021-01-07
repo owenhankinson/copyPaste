@@ -30,6 +30,7 @@ def make_clipboard():
     for entry in lst:
         lstbox_widget.insert(END, entry)
     print(lst)
+    pyperclip.copy(lst[0])
 
 
 button = Button(
