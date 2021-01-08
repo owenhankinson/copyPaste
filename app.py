@@ -1,3 +1,4 @@
+from os import terminal_size
 from tkinter.constants import CENTER, END, FIRST, INSERT, LEFT, RAISED, RIGHT, SINGLE, TOP
 from tkinter import Button, Label, Message, Radiobutton, Scrollbar, StringVar, Text, Listbox
 import tkinter
@@ -6,14 +7,15 @@ from typing import Counter
 from pynput import keyboard
 import pyperclip
 import threading
-import _thread
+from tkinter import ttk
+
 
 
 lst = list(set())
 
 app = tkinter.Tk()
 app.title("copyPaste")
-app.geometry("500x300")
+app.geometry("500x500")
 
 def selectPaste():
     global lst
@@ -27,49 +29,54 @@ def main():
     with keyboard.GlobalHotKeys({
     '<ctrl>+c': make_clipboard,
     '<ctrl>+<shift>+r': endProgram,}) as h:
-        try:
-            h.join()
-        except Exception:
-            print("Thread Listener could not start")
-            exit()
+      h.join()
 
 def endProgram():
-    return print("Done")
+    global thread
+    print("Exiting")
+    try:
+        app.destroy()
+        keyboard.Listener.stop
+        thread.stop()
+    except AttributeError:
+        pass
+    exit()
 
 def make_clipboard():
     time.sleep(.1)
+    blank = ""
     clipboard = app.clipboard_get()
     lst.append(clipboard)
+    lst.append(blank)
     lstbox_widget.delete(0,END)
     for entry in lst:
         lstbox_widget.insert(END, entry)
     print(lst)
     main()
 
-def appendSelectButton():
-    setPasteButton.pack()
-    threading.Thread(target=main).start()
+def copyAll():
+    for i in lst[:]:
+        if len(i)<=0:
+            lst.remove(i)
+    copied = "\n".join(lst)
+    pyperclip.copy(copied)
+
 lstbox_widget = Listbox(
     app,
     justify=LEFT,
     selectmode=SINGLE,
     activestyle='none',
     width=50,
-    height=20
-
+    height=20,
+    font= "Arial 10"
 )
 
-default_section = Radiobutton(
-    app,
-    text= "More Modes availible soon",
-    command=None
-)
+def startFunc():
+    global thread
+    thread = threading.Thread(target=main)
+    thread.setDaemon(True)
+    thread.start()
 
-select_mode = Radiobutton(
-    app,
-    text= "Select Mode",
-    command=appendSelectButton
-)
 def resetList():
     lstbox_widget.delete(0,END)
     global lst
@@ -78,11 +85,18 @@ def resetList():
 
 resetButton = Button(
     app,
-    justify=RIGHT,
+    justify=CENTER,
     text="Reset List",
     command=resetList
 )
 
+copyAllButton = Button(
+    app,
+    justify=CENTER,
+    text="Copy All",
+    command=copyAll
+
+)
 
 setPasteButton = Button(
     app,
@@ -92,14 +106,25 @@ setPasteButton = Button(
 )
 
 
-label_widget = Label(app, text="copyPate App")
+label_widget = Label(app,
+    text="The copyPaste App",
+    font="Arial 18 bold"
+ )
+label_widget_name = Label(app,
+    text="Developed By Owen Hankinson",
+    font="Arial 8 italic"
+ )
 
 
 if __name__ == "__main__":
     label_widget.pack()
+    label_widget_name.pack()
     lstbox_widget.pack()
+    copyAllButton.pack()
+    setPasteButton.pack()
     resetButton.pack()
-    select_mode.pack()
-    default_section.pack()
+    app.after_idle(startFunc)
     time.sleep(.5)
+    app.protocol("WM_DELETE_WINDOW", endProgram)
     app.mainloop()
+
