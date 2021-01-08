@@ -1,14 +1,11 @@
-from os import terminal_size
+import tkinter
 from tkinter.constants import CENTER, END, FIRST, INSERT, LEFT, RAISED, RIGHT, SINGLE, TOP
 from tkinter import Button, Label, Message, Radiobutton, Scrollbar, StringVar, Text, Listbox
-import tkinter
 import time
 from typing import Counter
 from pynput import keyboard
 import pyperclip
 import threading
-from tkinter import ttk
-
 
 
 lst = list(set())
@@ -43,7 +40,7 @@ def endProgram():
     exit()
 
 def make_clipboard():
-    time.sleep(.1)
+    time.sleep(.01)
     blank = ""
     clipboard = app.clipboard_get()
     lst.append(clipboard)
@@ -115,6 +112,9 @@ label_widget_name = Label(app,
     font="Arial 8 italic"
  )
 
+scrollBar = Scrollbar(app)
+lstbox_widget.config(yscrollcommand = scrollBar.set)
+scrollBar.config(command = lstbox_widget.yview) 
 
 if __name__ == "__main__":
     label_widget.pack()
@@ -127,4 +127,4 @@ if __name__ == "__main__":
     time.sleep(.5)
     app.protocol("WM_DELETE_WINDOW", endProgram)
     app.mainloop()
-
+ 
