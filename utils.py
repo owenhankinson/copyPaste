@@ -3,11 +3,11 @@ import time
 import pyperclip
 import threading
 from pynput import keyboard
-from app import make_clipboard
+from app import lstbox_widget
 from key_listner import for_canonical
 from paste_gui import pastingFunction
 
-lst = []
+
 
 def main():
     with keyboard.Listener(
@@ -18,6 +18,7 @@ def main():
         on_press=for_canonical(paste.press),
         on_release=for_canonical(paste.release)) as thread:
         thread.join()
+
     
 paste = keyboard.HotKey(
     keyboard.HotKey.parse('<ctrl>+v'),

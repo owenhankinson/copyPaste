@@ -1,8 +1,11 @@
 import pyperclip
 from app import lstbox_widget, lst
 import time
+import threading
+
 
 def defaultAction():
+
     pos = 1
     if pos >= len(lst):
         pyperclip.copy("")
@@ -13,5 +16,10 @@ def defaultAction():
         pos += 1
 
 def selectPaste():
-    selection = lstbox_widget.get(lstbox_widget.curselection())
-    pyperclip.copy(selection)
+    global lst
+    if len(lst) > 0:
+        selection = lstbox_widget.get(lstbox_widget.curselection())
+        pyperclip.copy(selection)
+    else:
+        pass
+

@@ -1,4 +1,4 @@
-from subprocess import run
+
 import pyautogui as pya
 import time
 import keyboard as kb
@@ -48,5 +48,3 @@ def runBack():
             if kb.is_pressed('f10') == True:
                 print("Ending Program")
                 break
-
-
