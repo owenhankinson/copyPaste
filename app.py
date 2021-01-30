@@ -1,5 +1,6 @@
 import tkinter
-from tkinter.constants import CENTER, END, FIRST, INSERT, LEFT, RAISED, RIGHT, SINGLE, TOP
+from tkinter import font
+from tkinter.constants import CENTER, END, FIRST, INSERT, LEFT, NONE, RAISED, RIGHT, SINGLE, TOP
 from tkinter import Button, Label, Message, Radiobutton, Scrollbar, StringVar, Text, Listbox
 import time
 from typing import Counter
@@ -30,7 +31,6 @@ def main():
 
 def endProgram():
     global thread
-    print("Exiting")
     try:
         app.destroy()
         keyboard.Listener.stop
@@ -40,11 +40,10 @@ def endProgram():
     exit()
 
 def make_clipboard():
-    time.sleep(.01)
+    time.sleep(.04)
     blank = ""
     clipboard = app.clipboard_get()
     lst.append(clipboard)
-    lst.append(blank)
     lstbox_widget.delete(0,END)
     for entry in lst:
         lstbox_widget.insert(END, entry)
@@ -58,6 +57,11 @@ def copyAll():
     copied = "\n".join(lst)
     pyperclip.copy(copied)
 
+def delete():
+    selection = lstbox_widget.get(lstbox_widget.curselection())
+    ind_num = 9                                                       #Look up how to get the index of a certain selection then use in delete function.
+    lstbox_widget.delete(selection)
+
 lstbox_widget = Listbox(
     app,
     justify=LEFT,
@@ -68,6 +72,21 @@ lstbox_widget = Listbox(
     font= "Arial 10"
 )
 
+delete_btn = Button(
+    app,
+    justify=CENTER,
+    text="Delete Selection",
+    command=delete
+
+)
+num_listbox = Listbox(
+    app,
+    justify=LEFT,
+    selectmode=NONE,
+    width=1,
+    height=20,
+    font="Arial 20"
+)
 def startFunc():
     global thread
     thread = threading.Thread(target=main)
@@ -121,6 +140,7 @@ if __name__ == "__main__":
     label_widget_name.pack()
     lstbox_widget.pack()
     copyAllButton.pack()
+    delete_btn.pack()
     setPasteButton.pack()
     resetButton.pack()
     app.after_idle(startFunc)
