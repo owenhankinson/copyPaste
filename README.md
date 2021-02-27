@@ -14,7 +14,7 @@ Download the three files to desktop:
 2. paste_gui.ppy
 3. requirements.txt
 
-Then, install all files in the requirements.txt file:
+Then, install all modules in the requirements.txt file:
 
 `cd Desktop`
 
