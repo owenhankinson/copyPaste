@@ -35,12 +35,13 @@ def endProgram():
         app.destroy()
         keyboard.Listener.stop
         thread.stop()
+        thread_2.stop()
     except AttributeError:
         pass
     exit()
 
 def make_clipboard():
-    time.sleep(.04)
+    time.sleep(.02)
     blank = ""
     clipboard = app.clipboard_get()
     lst.append(clipboard)
@@ -58,9 +59,10 @@ def copyAll():
     pyperclip.copy(copied)
 
 def delete():
-    selection = lstbox_widget.get(lstbox_widget.curselection())
-    ind_num = 9                                                       #Look up how to get the index of a certain selection then use in delete function.
-    lstbox_widget.delete(selection)
+    threading.Thread()
+    selection = lstbox_widget.get(lstbox_widget.curselection())              #Look up how to get the index of a certain selection then use in delete function.
+    num = lst.index(selection)
+    lstbox_widget.delete(num)
 
 lstbox_widget = Listbox(
     app,
@@ -88,11 +90,13 @@ num_listbox = Listbox(
     font="Arial 20"
 )
 def startFunc():
-    global thread
+    global thread, thread_2
     thread = threading.Thread(target=main)
     thread.setDaemon(True)
     thread.start()
-
+    thread_2 = threading.Thread(target=make_clipboard)
+    thread_2.setDaemon(True)
+    thread_2.start()
 def resetList():
     lstbox_widget.delete(0,END)
     global lst
